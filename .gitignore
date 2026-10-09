@@ -1,0 +1,26 @@
+
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Build output and test coverage
+dist/
+build/
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+.npm/
+
+# macOS files (all directories and subdirectories)
+.DS_Store
+._*
