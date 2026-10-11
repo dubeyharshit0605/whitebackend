@@ -1,10 +1,9 @@
-require("dotenv").config();
-
 const express = require("express");
 const cors = require("cors");
 
 const userRoutes = require("./routes/userRoutes");
-const canvasRoutes = require("./routes/canavasroute");
+const canvasRoutes = require("./routes/canavasRoute");
+const postRoutes = require("./routes/postRoutes");
 const { connectToDatabase } = require("./db");
 
 const app = express();
@@ -16,7 +15,8 @@ app.use(express.json());
 
 // User endpoints: /users/register, /users/login, /users/profile
 app.use("/users", userRoutes);
-app.use("/canvas", canvasRoutes);   
+app.use("/canvas", canvasRoutes);
+app.use("/posts", postRoutes);
 
 // Start the server only after MongoDB connects.
 async function startServer() {
@@ -32,4 +32,9 @@ async function startServer() {
   }
 }
 
-startServer();
+if (require.main === module) {
+  require("dotenv").config();
+  startServer();
+}
+
+module.exports = { app, startServer };
