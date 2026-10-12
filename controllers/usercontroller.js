@@ -162,7 +162,7 @@ const getUserProfile = async (req, res) => {
         return res.status(500).json({
             error: "Internal server error",
         });
-    }
+    }//
 };
 const shareCanvas = async (req, res) => {
   try {
