@@ -203,6 +203,40 @@ canvasSchema.statics.updateCanvas = async function (userId, id, updates) {
   Object.assign(canvas, updates);
   return canvas.save();
 };
+//add email with sharedWith array
+canavaschema .statics.shareCanvasWithUser = async function (canvasId, ownerId, userEmail) {
+  if (!canvasId || !mongoose.isValidObjectId(canvasId)) {
+    throw new Error("Invalid canvas ID");
+  }
+
+  if (!ownerId || !mongoose.isValidObjectId(ownerId)) {
+    throw new Error("Invalid owner ID");
+  }
+
+  const canvas = await this.findById(canvasId);
+
+  if (!canvas) {
+    throw new Error("Canvas not found");
+  }
+
+  if (!canvas.owner.equals(ownerId)) {
+    throw new Error("Only the owner can share the canvas");
+  }
+
+  const userToShareWith = await mongoose.model("User").findOne({ email: userEmail });
+
+  if (!userToShareWith) {
+    throw new Error("User to share with not found");
+  }
+
+  // Check if the user is already in the sharedWith array
+  if (canvas.sharedWith.some((sharedUserId) => sharedUserId.equals(userToShareWith._id))) {
+    throw new Error("User is already shared with this canvas");
+  }
+
+  canvas.sharedWith.push(userToShareWith._id);
+  return canvas.save();
+};      
 
 canvasSchema.index({ owner: 1, updatedAt: -1 });
 canvasSchema.index({ sharedWith: 1, updatedAt: -1 });

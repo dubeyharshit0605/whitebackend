@@ -152,5 +152,51 @@ const updateCanvas = async (req, res) => {
     return res.status(500).json({ message: "Failed to update canvas" });
   }
 };
+const sharingCanvas = async (req, res) => {
+  try {
+    if (!req.userId) {
+      return res.status(401).json({
+        message: "Authenticated user ID is missing",
+      });
+    }
 
+    const { sharedWith } = req.body;
+
+    if (!Array.isArray(sharedWith)) {
+      return res.status(400).json({
+        message: "sharedWith must be an array of user IDs",
+      });
+    }
+
+    const canvas = await Canvas.updateCanvas(
+      req.userId,
+      req.params.id,
+      { sharedWith }
+    );
+
+    return res.status(200).json(canvas);
+  } catch (error) {
+    if (
+      error.message === "Invalid user ID" ||
+      error.message === "Invalid canvas ID"
+    ) {
+      return res.status(400).json({ message: error.message });
+    }
+
+    if (error.message === "Canvas not found") {
+      return res.status(404).json({ message: error.message });
+    }
+
+    if (error.message === "User does not have access to this canvas") {
+      return res.status(403).json({ message: error.message });
+    }
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
+
+    console.error("Error sharing canvas:", error);
+    return res.status(500).json({ message: "Failed to share canvas" });
+  }
+}
 module.exports = { getcanvas, createCanvas, loadCanvas, updateCanvas };
