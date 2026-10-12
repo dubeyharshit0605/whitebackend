@@ -204,7 +204,7 @@ canvasSchema.statics.updateCanvas = async function (userId, id, updates) {
   return canvas.save();
 };
 //add email with sharedWith array
-canavaSchema .statics.shareCanvasWithUser = async function (canvasId, ownerId, userEmail) {
+canavasSchema .statics.shareCanvasWithUser = async function (canvasId, ownerId, userEmail) {
   if (!canvasId || !mongoose.isValidObjectId(canvasId)) {
     throw new Error("Invalid canvas ID");
   }
